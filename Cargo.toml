@@ -1,0 +1,18 @@
+[package]
+name = "askme"
+version = "1.0.0"
+edition = "2024"
+authors = ["Francisco Monteagudo <francisco@monteagudo.net>"]
+keywords = ["cli", "ia", "ollama", "openai", "llm"]
+description = "CLI for interacting with LLM services"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+clap = { version = "4.5.53", features = ["derive", "string"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+serde_yaml = "0.9.34"
+ureq = { version = "3.1.4", features = ["json"] }
+rust-i18n = "3"
+sys-locale = "0.3"
+dirs = "5.0"
