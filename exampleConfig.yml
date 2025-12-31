@@ -1,0 +1,26 @@
+default_service: exampleOllama1
+default_prompt: basic
+
+system_prompts:
+  basic: "You are a helpful CLI assistant."
+  programmer: "You are a first class python developer"
+  piperesponse: "When asked for a JSON response, provide only the JSON code wrapped in standard markdown code blocks"
+
+services:
+  exampleOllama1:
+    class: ollama
+    description: "Ollama locale server"
+    model: qwen3:14b
+
+  exampleOllama2:
+    class: ollama
+    description: "Ollama server in my local network"
+    url: http://myollama.local:11434
+    model: qwen3:14b
+
+  exampleOpenAI:
+    class: openai
+    description: "OpenAI example service"
+    model: gpt-4
+    api_key: "..."
+    system_prompt: programmer
