@@ -1,5 +1,5 @@
 use crate::config::Config;
-use crate::drivers::{LLMService, openai::OpenAIDriver, ollama::OllamaDriver};
+use crate::drivers::{LLMService, openai::OpenAIDriver, ollama::OllamaDriver, gemini::GeminiDriver, anthropic::AnthropicDriver};
 use anyhow::{Result, bail, Context};
 use rust_i18n::t;
 
@@ -61,13 +61,13 @@ impl<'a> Client<'a> {
                  let model = model.context(t!("model_required", service = "Gemini"))?;
                  let sys_prompt = system_prompt_text.context(t!("system_prompt_required", service = "Gemini"))?;
                  
-                 Box::new(crate::drivers::gemini::GeminiDriver::new(service_config, model, sys_prompt)?)
+                 Box::new(GeminiDriver::new(service_config, model, sys_prompt)?)
             },
             "anthropic" => {
                  let model = model.context(t!("model_required", service = "Anthropic"))?;
                  let sys_prompt = system_prompt_text.context(t!("system_prompt_required", service = "Anthropic"))?;
                  
-                 Box::new(crate::drivers::anthropic::AnthropicDriver::new(service_config, model, sys_prompt)?)
+                 Box::new(AnthropicDriver::new(service_config, model, sys_prompt)?)
             },
             _ => bail!("{}", t!("unknown_service_class_detailed", class = service_config.class, valid = "openai, ollama, gemini, anthropic")),
         };

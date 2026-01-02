@@ -72,6 +72,100 @@ Provide a custom system prompt directly in the command:
 askme -p "You are a poetic assistant. Answer in rhymes." "What is the capital of France?"
 ```
 
+
+## The extractjs Option
+
+The `--extractjs` (or `-E`) option parses the LLM's response to find and extract a valid JSON object or array. This is especially useful when the model includes Markdown formatting (like \`\`\`json\`\`\`) or conversational text in its response.
+
+When this option is used in conjunction with `--json`, the `response` field in the output object will contain the parsed JSON content directly, rather than the raw string response from the model.
+
+**Example 1: Basic Extraction**
+
+Command:
+```bash
+askme -p piperesponse -E "Generate a list of 5 dummy users with attributes: name, email, role. Role must be admin, editor, viewer or user. Return the output in json format"
+```
+
+Response:
+```json
+[
+  {
+    "email": "alex.johnson@example.com",
+    "name": "Alex Johnson",
+    "role": "admin"
+  },
+  {
+    "email": "taylor.smith@example.com",
+    "name": "Taylor Smith",
+    "role": "editor"
+  },
+  {
+    "email": "jordan.lee@example.com",
+    "name": "Jordan Lee",
+    "role": "viewer"
+  },
+  {
+    "email": "morgan.davis@example.com",
+    "name": "Morgan Davis",
+    "role": "user"
+  },
+  {
+    "email": "casey.wilson@example.com",
+    "name": "Casey Wilson",
+    "role": "editor"
+  }
+]
+```
+
+**Example 2: Extraction with Full JSON Output**
+
+When combined with the `--json` flag, the extracted content is placed within the `response` field of the metadata object.
+
+Command:
+```bash
+askme --json -p piperesponse -E "Generate a list of 5 dummy users with attributes: name, email, role. Role must be admin, editor, viewer or user. Return the output in json format"
+```
+
+Response:
+```json
+{
+  "model": "llama3",
+  "prompt": "Generate a list of 5 dummy users with attributes: name, email, role. Role must be admin, editor, viewer or user. Return the output in json format",
+  "response": [
+    {
+      "email": "alex.johnson@example.com",
+      "name": "Alex Johnson",
+      "role": "admin"
+    },
+    {
+      "email": "taylor.smith@example.com",
+      "name": "Taylor Smith",
+      "role": "editor"
+    },
+    {
+      "email": "jordan.lee@example.com",
+      "name": "Jordan Lee",
+      "role": "viewer"
+    },
+    {
+      "email": "morgan.davis@example.com",
+      "name": "Morgan Davis",
+      "role": "user"
+    },
+    {
+      "email": "casey.wilson@example.com",
+      "name": "Casey Wilson",
+      "role": "editor"
+    }
+  ],
+  "service": "localollama",
+  "system_prompt": "When asked for a JSON response, provide only the JSON code wrapped in standard markdown code blocks",
+  "think": null
+}
+```
+
+## Configuration
+
 AskMe is driven by a configuration file, typically named `askme.yml`. The tool searches for this file in the following order:
 1.  Path specified via `--config`.
 2.  Current working directory.
@@ -79,6 +173,10 @@ AskMe is driven by a configuration file, typically named `askme.yml`. The tool s
 4.  Global configuration directory (e.g., `/etc/askme.yml` on Linux).
 
 Global configuration file is always loaded first. If you have both global and user configuration files, both will be loaded and merged with the user configuration overriding global one.
+
+### Security
+
+The main configuration file (`/etc/askme.yml`) typically exposes API keys, which constitutes a significant security risk. The recommended solution is to install the program as a setuid binary (`chmod +s askme`) and ensure that the configuration file has access permissions restricted to the `root` user only.
 
 ### Structure
 

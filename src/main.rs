@@ -28,7 +28,6 @@ fn set_system_locale() {
 
 #[derive(Parser, Debug)]
 #[command(
-    author, 
     version, 
     about, 
     long_about = None,
@@ -351,15 +350,29 @@ fn main() -> Result<()> {
 fn extract_json_blocks(response: &str) -> Option<serde_json::Value> {
     // Regex to find ```json ... ``` blocks
     // Dot matches newline needs to be enabled for content
-    let re = Regex::new(r"```json\s*([\s\S]*?)\s*```").unwrap();
+    let re_json = Regex::new(r"```json\s*([\s\S]*?)\s*```").unwrap();
     
     let mut blocks = Vec::new();
-    for cap in re.captures_iter(response) {
+    for cap in re_json.captures_iter(response) {
         if let Some(content) = cap.get(1) {
             let json_str = content.as_str();
             // Try to parse as JSON
             if let Ok(val) = serde_json::from_str::<serde_json::Value>(json_str) {
                 blocks.push(val);
+            }
+        }
+    }
+
+    // If no specific json blocks found, try to find generic blocks containing valid JSON
+    if blocks.is_empty() {
+        let re_generic = Regex::new(r"```\s*([\s\S]*?)\s*```").unwrap();
+        for cap in re_generic.captures_iter(response) {
+            if let Some(content) = cap.get(1) {
+                let json_str = content.as_str();
+                // Try to parse as JSON
+                if let Ok(val) = serde_json::from_str::<serde_json::Value>(json_str) {
+                    blocks.push(val);
+                }
             }
         }
     }
@@ -372,3 +385,4 @@ fn extract_json_blocks(response: &str) -> Option<serde_json::Value> {
         Some(serde_json::Value::Array(blocks))
     }
 }
+
