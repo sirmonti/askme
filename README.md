@@ -6,6 +6,10 @@ Conceived as a Rust development exercise using Antigravity (The Google AI IDE), 
 
 Designed to be lightweight, cross-platform, and easily pipeable, **AskMe** is a powerful utility for developers and power users who want to integrate AI capabilities into their command-line workflows.
 
+## Installation
+
+Pre-compiled executables for Linux, Windows, and macOS are available in the `bin` directory. To try the program, simply download the appropriate executable for your operating system.
+
 ## Command Line Options and Usage Examples
 
 The `askme` command provides several flags to control its behavior.
