@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Conceived as a Rust development exercise using Antigravity (The Google AI IDE), **AskMe** is a Command Line Interface (CLI) tool designed to interact with Large Language Models (LLMs) providers directly from your command line, with support for OpenAI, Ollama (local models), Gemini, and Anthropic. 
+Conceived as a Rust development exercise using Antigravity (The Google AI IDE), **AskMe** is a Command Line Interface (CLI) tool designed to interact with Large Language Models (LLMs) providers directly from your command line, with support for OpenAI, Ollama (local models), Gemini, and Anthropic.
 
 Designed to be lightweight, cross-platform, and easily pipeable, **AskMe** is a powerful utility for developers and power users who want to integrate AI capabilities into their command-line workflows.
 
@@ -39,43 +39,51 @@ askme [OPTIONS] [PROMPT]
 
 ### Examples
 
-**1. Simple Query (Default Service)**
+#### 1. Simple Query (Default Service)
+
 ```bash
 askme "How do I reverse a string in Rust?"
 ```
 
-**2. Specify Service and Model**
+#### 2. Specify Service and Model
+
 ```bash
 askme --service openai --model gpt-4 "Explain quantum entanglement like I'm 5"
 ```
 
-**3. List Configured Services**
+#### 3. List Configured Services
+
 ```bash
 askme --list services
 ```
 
-**4. List Available Models for a Service**
+#### 4. List Available Models for a Service
+
 ```bash
 askme --lmodels ollama
 ```
 
-**5. JSON Output**
+#### 5. JSON Output
+
 ```bash
 askme --json "Generate a JSON object with user data"
 ```
 
-**6. Using Configured System Prompt**
+#### 6. Using Configured System Prompt
+
 Use a predefined system prompt from your configuration file (e.g., `coder`):
+
 ```bash
 askme -p coder "Write a Python script to scrape a website"
 ```
 
-**7. Using Literal System Prompt**
+#### 7. Using Literal System Prompt
+
 Provide a custom system prompt directly in the command:
+
 ```bash
 askme -p "You are a poetic assistant. Answer in rhymes." "What is the capital of France?"
 ```
-
 
 ## The extractjs Option
 
@@ -83,14 +91,16 @@ The `--extractjs` (or `-E`) option parses the LLM's response to find and extract
 
 When this option is used in conjunction with `--json`, the `response` field in the output object will contain the parsed JSON content directly, rather than the raw string response from the model.
 
-**Example 1: Basic Extraction**
+### Example 1: Basic Extraction
 
 Command:
+
 ```bash
 askme -p piperesponse -E "Generate a list of 5 dummy users with attributes: name, email, role. Role must be admin, editor, viewer or user. Return the output in json format"
 ```
 
 Response:
+
 ```json
 [
   {
@@ -121,16 +131,18 @@ Response:
 ]
 ```
 
-**Example 2: Extraction with Full JSON Output**
+### Example 2: Extraction with Full JSON Output
 
 When combined with the `--json` flag, the extracted content is placed within the `response` field of the metadata object.
 
 Command:
+
 ```bash
 askme --json -p piperesponse -E "Generate a list of 5 dummy users with attributes: name, email, role. Role must be admin, editor, viewer or user. Return the output in json format"
 ```
 
 Response:
+
 ```json
 {
   "model": "llama3",
@@ -171,10 +183,11 @@ Response:
 ## Configuration
 
 AskMe is driven by a configuration file, typically named `askme.yml`. The tool searches for this file in the following order:
-1.  Path specified via `--config`.
-2.  Current working directory.
-3.  User's configuration directory (e.g., `~/.config/askme/` on Linux, `%APPDATA%\askme\` on Windows).
-4.  Global configuration directory (e.g., `/etc/askme.yml` on Linux).
+
+1. Path specified via `--config`.
+2. Current working directory.
+3. User's configuration directory (e.g., `~/.config/askme/` on Linux, `%APPDATA%\askme\` on Windows).
+4. Global configuration directory (e.g., `/etc/askme.yml` on Linux).
 
 Global configuration file is always loaded first. If you have both global and user configuration files, both will be loaded and merged with the user configuration overriding global one.
 
@@ -185,9 +198,10 @@ The main configuration file (`/etc/askme.yml`) typically exposes API keys, which
 ### Structure
 
 The configuration file is in YAML format and consists of three main sections:
--   **Defaults**: Global default settings.
--   **System Prompts**: Reusable system prompts.
--   **Services**: Definitions for LLM providers.
+
+- **Defaults**: Global default settings.
+- **System Prompts**: Reusable system prompts.
+- **Services**: Definitions for LLM providers.
 
 #### Example `askme.yml`
 
@@ -235,10 +249,11 @@ services:
 ```
 
 #### Service Classes
--   `openai`: For OpenAI-compatible APIs.
--   `ollama`: For local Ollama instances or Ollama-compatible APIs.
--   `gemini`: For Google's Gemini API (ignores `url` param).
--   `anthropic`: For Anthropic's Claude API (ignores `url` param).
+
+- `openai`: For OpenAI-compatible APIs.
+- `ollama`: For local Ollama instances or Ollama-compatible APIs.
+- `gemini`: For Google's Gemini API (ignores `url` param).
+- `anthropic`: For Anthropic's Claude API (ignores `url` param).
 
 ## Chaining with Other Applications
 
@@ -248,27 +263,36 @@ This allows you to pipe output from other commands directly into an LLM analysis
 
 ### Examples
 
-**1. Explain a Source File**
+#### 1. Explain a Source File
+
 Pipe a code file into AskMe to get an explanation:
+
 ```bash
 cat src/main.rs | askme -p "Explain what this Rust code does" -
 ```
+
 Note that we are using the system prompt as an instruction.
 
-**2. Analyze Git Changes**
+#### 2. Analyze Git Changes
+
 Ask for a summary of your uncommitted changes:
+
 ```bash
 git diff | askme -s openai -p "Summarize these changes for a commit message" -
 ```
 
-**3. Debugging Logs**
+#### 3. Debugging Logs
+
 grep for errors and ask for a diagnosis:
+
 ```bash
 grep "ERROR" /var/log/syslog | tail -n 20 | askme -p "Analyze these error logs and suggest a fix" -
 ```
 
-**4. Chaining JSON Output**
+#### 4. Chaining JSON Output
+
 Use the JSON output flag to pipe structured data into other tools like `jq`:
+
 ```bash
 askme --json --prompt piperesponse --extractjs "Generate a list of 5 dummy users with attributes: name, email, role. Role must be admin, editor, viewer or user. Return the output in json format" | jq '.["response"].[] | select(.role == "admin")'
 ```

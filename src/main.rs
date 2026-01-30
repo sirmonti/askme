@@ -18,7 +18,7 @@ fn set_system_locale() {
     #[cfg(debug_assertions)]
     eprintln!("System locale: {}\nLang code: {}", locale, lang_code);
 
-    let supported = ["en", "es", "fr", "it", "de", "zh"];
+    let supported = ["en", "es", "fr", "it", "de", "zh", "pl", "pt", "ru", "ja", "ko"];
     if supported.contains(&lang_code) {
         rust_i18n::set_locale(lang_code);
     } else {

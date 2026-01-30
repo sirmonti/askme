@@ -5,6 +5,6 @@ export RUSTFLAGS="-C link-arg=-isysroot -C link-arg=$SDK_PATH -C link-arg=-F -C 
 
 cargo clean
 cargo build --release
-cargo build --target x86_64-pc-windows-gnu --release
+cargo zigbuild --target x86_64-pc-windows-gnu --release
 cargo zigbuild --target aarch64-apple-darwin --release
 cargo zigbuild --target x86_64-apple-darwin --release
